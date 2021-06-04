@@ -1,0 +1,36 @@
+#This script will step through all AD groups in the input file, enumerate the members, then count them.  
+#This could be combined with Step 2 and eliminate the need for input files, however, for very large domains, this was needed.
+
+
+Import-Csv -Path "C:\CountInput.csv" |
+
+  ForEach-Object{
+
+      #build Vars
+      $name = $_.Name
+      $GroupCategory = $_.GroupCategory
+      $GroupScope = $_.GroupScope
+      $DistinguishedName = $_.DistinguishedName
+
+
+      #This sometimes errors and I want to know when it does.  
+      try{
+          #The Server specification is needed when multiple DC's are available.  See step1 of 
+          $Users = @(Get-ADGroupmember -Identity $DistinguishedName -Server DC-NAME-OR-IP-HERE)
+          $count = $Users.count
+      }
+      catch{
+          $count = "Error"
+      }
+
+      #Send Vars to File
+      $name,$count,$GroupCategory,$GroupScope,$DistinguishedName -join ',' | Out-File -filePath "C:\Ouput.csv" -Append -Encoding ASCII
+
+      #Send Vars to Screen (this could be commented out in the future) 
+      $name,$count,$GroupCategory,$GroupScope,$DistinguishedName -join ','
+
+      #Reset Vars (probably not needed, but just in case)
+      $name = $null
+      $count = $null
+
+      }
