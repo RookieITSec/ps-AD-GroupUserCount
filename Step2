@@ -4,7 +4,8 @@
 #Load the PS Module
 Import-Module ActiveDirectory
 
-#The Get-ADGroup is the tool used.  I found in large environments the DC your PC is using may not be idea.  I recommend finding a server that is nearby, fast, and not heavily loaded that contains a replica of the domain.
+#The Get-ADGroup is the tool used.  I found in large environments the DC your PC is using may not be idea.  I recommend finding a server that is nearby, fast, and not heavily loaded that contains a replica of the domain.  See Step1 for more details.
+#Note - The filter parameter could be added to remove results that are not needed, for examplle you could filter out Distro groups.  
 Get-ADGroup -Properties * -Filter * -Server DC-NAME-OR-IP-HERE | 
 
 #The Select statement is the data we will pull from the domain for future use.  You may want to pull other data, but this works for what I needed.
@@ -12,3 +13,7 @@ Select-Object Name,GroupCategory,GroupScope,SamAccountName,DistinguishedName |
 
 #This is the output file location.  Make sure you can write/edit to this location.  
 Export-CSV -Path "C:\ExportAllGroupsDetails.csv"
+
+
+
+#Note on output - I went into Excel and filtered down the list to the groups I wanted to count the users in.  For me, this meant removing all Distro groups.  This script could be modified to filter 
