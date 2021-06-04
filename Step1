@@ -1,6 +1,7 @@
 #This script will find all DC's in the environment and then test to determine what one is fastest.  
 #The original script was found elsewhere online and I modified it to fit my use case....finding what DC's respond the fastest in a large AD environment.
 
+#Depending on your use case, this may not be needed.  Smaller domains with fewer DC's or single physical locations may be fine with step2 and step3 of this process.
 
 #Load the PS Module
 Import-Module ActiveDirectory
