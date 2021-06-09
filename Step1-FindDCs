@@ -1,9 +1,13 @@
-#This script will find all DC's in the environment and then test to determine what one is fastest.  
-#The original script was found elsewhere online and I modified it to fit my use case....finding what DC's respond the fastest in a large AD environment.
+# This script will find all DC's in the environment and then test to determine what one is "fastest."  
+# The original script was found elsewhere online and I modified it to fit my use case....finding what DC's respond the fastest in a large AD environment.
 
-#Depending on your use case, this may not be needed.  Smaller domains with fewer DC's or single physical locations may be fine with step2 and step3 of this process.
+# Depending on your use case, this may not be needed.  Smaller domains with fewer DC's or single locations may be fine with step2 and step3 of this process.
 
-#Load the PS Module
+# Variables
+  # No Vars needed, this script finds all DC's for your current domain.
+  # If you have access to multiple domains, you may want to tweak the $DomainName var in the below section.
+
+# Load the PS Module
 Import-Module ActiveDirectory
 
 # Get your ad domain
@@ -62,6 +66,7 @@ ForEach($DC in $AllDCs)
         default                                       { $PingStatus = "Unknown" }
     }
 
+	# This grabs some of the standard ping output.  The output could be formatted into different columns, but this works for what I needed.
 	$PingTime = ping $DC.Hostname -n 4 | Where-Object {$_ -match "Average"}
 
           
@@ -77,6 +82,6 @@ ForEach($DC in $AllDCs)
                         )| Out-Null                          
 }
  
-# Display results in console 
+# Display results in a PS table pop-up.  This could be tweaked to output to a CSV if desired.
 $DCTable | Sort-Object Site | Out-GridView
  
