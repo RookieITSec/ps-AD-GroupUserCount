@@ -1,0 +1,28 @@
+# Note - This script will look for all AD groups and pull the relevent details.  Note, it will pull all groups, both Sec and Distro.
+# This section of the script could be used anytime a complete list of groups from a domain is needed.  In my case, I used the output from this as an input to count users in each group.
+
+
+# Variables to use in this script.  Both should be in quotes to be safe.
+# Note about the target DC - I found in large environments the DC your PC is using may not be idea.  I recommend finding a server that is nearby, fast, and not heavily loaded that contains a replica of the domain. 
+  #Script to find all DC's and show their pings here - https://github.com/RookieITSec/ps-AD-GroupUserCount/blob/main/Step1-FindDCs
+  $DCServer = "DC-NAME-OR-IP-HERE"
+  $OutputFile = "C:\ExportAllGroupsDetails.csv"
+
+
+
+#Load the PS Module
+Import-Module ActiveDirectory
+
+#The Get-ADGroup is the tool used.   See Step1 for more details.
+#Note - The filter parameter could be added to remove results that are not needed, for examplle you could filter out Distro groups.  
+Get-ADGroup -Properties * -Filter * -Server $DCServer | 
+
+#The Select statement is the data we will pull from the domain for future use.  You may want to pull other data, but this works for what I needed.
+Select-Object Name,GroupCategory,GroupScope,SamAccountName,DistinguishedName |
+
+#This is the output file location.  Make sure you can write/edit to this location.  
+Export-CSV -Path $OutputFile = 
+
+
+
+#Note on output - I went into Excel and filtered down the list to the groups I wanted to count the users in.  For me, this meant removing all Distro groups.  This script could be modified to filter 
